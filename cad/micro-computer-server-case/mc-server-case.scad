@@ -1,30 +1,41 @@
+use <threadlib/threadlib.scad>
+
 $fn=90;  // accuracy
 
 // Fundemental
 tw = 482.6; // total width
 u1 = 44.45; // one server unit
 u2 = u1*2;  // two server unit
-
+m4 = 4.2;   // screw
+wmm4 = 7;   // m4 mutter width
+hmm4 = 3.2; // height mutter m8
+    
 // Fundational
-wt  = 7;  // wall thickness 
-wts = 8;  // wall thickness side
-ct  = 10; // case thickenss
-mt  = 4; // mount tikness
-mw  = 12; // mount width
-mhr = 6;  // mounting holes rack (d)
-mhc = 4;  // mounting holes case (d)
-mhn = 3;  // mounting holes node (d)
-nt  = 3*13; // nodes total 
-
+wt  = 7;    // wall thickness 
+wts = 8;    // wall thickness side
+ct  = 14;   // case thickenss
+mt  = 4;    // mount tikness
+mw  = 12;   // mount width
+mhr = 6;    // mounting holes rack (d)
+mhc = 4;    // mounting holes case (d)
+mhn = 3;    // mounting holes node (d)
+npc = 13;   // nodes total 
+fs  = 20;   // from side
+s   = 0.1;  // smale number
+s2  = s*2;  // smalle numer extra lenght
+    
 // Spesific
 cw  = (tw-mw*2)/3; // case width
-icw = cw-wts*2;  // inner case width
-npc = nt/3;  // nodes per case
-n1  = icw/npc;   // node (ssd + extra) (~10)
-n3  = n1*3;      // node (pi + extra)
-nw  = u2-wt*2; // node width
-nmt = 3; // node mouting thickness
-
+icw = cw-wts*2;    // inner case width
+nt  = npc*3;       // nodes per case
+n1  = icw/npc;     // node (ssd + extra) (~10)
+n3  = n1*3;        // node (pi + extra)
+nw  = u2-wt*2;     // node width
+nmt = 3;           // node mouting thickness
+cs  = m4+3;        // counter sink
+csd = 3;           // counder sink depth
+    
+    
 module ssdMount(n1,u2,nw,nmt){
    w = 69.9; // width
    d = 100; // depth
@@ -76,46 +87,63 @@ module case(icw,cw,u2,nw,ct){
     d = u2;
     id = nw;
     h = ct;
-    
+    ph = -ct-s; // position holes
     s=0.1;
     s2=s*2; 
     
+    module mountHole(){
+        
+    }
+    
     difference(){
+    union(){
     cube([w,d,h]);
-     
+        
+    }
+    
+    union(){
     translate([(w-iw)/2,(d-id)/2,-s])
     cube([iw,id,h+s2]);
+    
+    translate([wts/2,u2/2,ph])
+    cylinder(h=20,d=3.2);
+    
+    translate([cw-wts/2,u2/2,ph])
+    cylinder(h=20,d=3.2);
+        
+    for(i=[1:2:npc*2]){
+    translate([wts+(n1/2)*i,wt/2,ph])
+    cylinder(h=20,d=3.2);
+    //bolt("M3", turns=16, higbee_arc=30);
+    
+    translate([wts+(n1/2)*i,u2-wt/2,ph])
+    cylinder(h=20,d=3.2);
+    //bolt("M3", turns=16, higbee_arc=30);    
     }
+    
+    }}
+}
+
+module caseHole(y,z){
+    
+    rotate([0,90,0])
+    translate([-ct/2,y,z]) //icw
+    cylinder(h=20,d=m4);
 }
 
 module fhex(wid,height){
-hull(){
-cube([wid/1.7,wid,height],center = true);
+    hull(){
+    cube([wid/1.7,wid,height],center = true);
 
-rotate([0,0,120])
-cube([wid/1.7,wid,height],center = true);
+    rotate([0,0,120])
+    cube([wid/1.7,wid,height],center = true);
 
-rotate([0,0,240])
-cube([wid/1.7,wid,height],center = true);
+    rotate([0,0,240])
+    cube([wid/1.7,wid,height],center = true);
 }}
 
-module caseSide(icw,cw,u2,nw,ct,mw,mt){   
-    wmm4 = 7; // m4 mutter width
-    hmm4 = 3.2; // height mutter m8
-    fs = 20; // from side
-    // possiotion of 
-    m4 = 4.2; //screw
-    cs = m4+3; // counter sink
-    csd = 3;//counder sink depth
-    s=0.1;
-    s2=s*2;
-    depth = (cw-icw)/2-csd;
-    
-    module h(y){
-    rotate([0,90,0])
-    translate([-ct/2,y,icw])
-    cylinder(h=20,d=m4);
-    }
+
+module caseSide(icw,cw,u2,nw,ct,mw,mt){
     
     module m(y){
     space = cw-(cw-icw)/2+hmm4/2-0.1;
@@ -140,20 +168,15 @@ module caseSide(icw,cw,u2,nw,ct,mw,mt){
     union(){
     m(fs);
     m(u2-fs);
-    h(fs);
-    h(u2-fs);
+    caseHole(fs,icw);
+    caseHole(u2-fs,icw);    
     mh(fs); //change
     mh(u2-fs);    
     }}
 }
 
 module caseMiddle(icw,cw,u2,nw,ct){
-    m4 = 4.2; //screw
-    fs = 20; // from side
-    cs = m4+3; // counter sink
-    csd = 3;//counder sink depth
-    s=0.1;
-    s2=s*2;
+    
     depth = (cw-icw)/2-csd;
     
     module h(y){
@@ -164,7 +187,7 @@ module caseMiddle(icw,cw,u2,nw,ct){
     
     module c(y,z,d1,d2){
     rotate([0,90,0])
-    translate([-mt/2,y,z])
+    translate([-ct/2,y,z])
     cylinder(h=csd+s,d1=d1,d2=d2);
     }
     
@@ -172,8 +195,10 @@ module caseMiddle(icw,cw,u2,nw,ct){
     case(icw,cw,u2,nw,ct);
         
     union(){
-    h(fs);    
-    h(u2-fs);
+    caseHole(fs,icw);
+    caseHole(u2-fs,icw);
+    caseHole(fs,-s);
+    caseHole(u2-fs,-s);
     c(fs,depth,m4,cs);
     c(u2-fs,depth,m4,cs);
     c(fs,cw-depth-csd-s,cs,m4);
@@ -183,5 +208,15 @@ module caseMiddle(icw,cw,u2,nw,ct){
 
 //ssdMount(n1,u2,nw,nmt);
 //case(icw,cw,u2,nw,ct);
+
+
+translate([0,0,u2])
+rotate([-90,0,0])
+union(){
 caseSide(icw,cw,u2,nw,ct,mw,mt);
-//caseMiddle(icw,cw,u2,nw,ct);
+translate([cw,0,0])
+caseMiddle(icw,cw,u2,nw,ct);
+translate([cw*3,u2,0])
+rotate([0,0,180])
+caseSide(icw,cw,u2,nw,ct,mw,mt);
+}

@@ -19,7 +19,7 @@ mw  = 12;   // mount width
 mhr = 6;    // mounting holes rack (d)
 mhc = 4;    // mounting holes case (d)
 mhn = 3;    // mounting holes node (d)
-npc = 13;   // nodes total 
+npc = 8;   // nodes per case
 fs  = 20;   // from side
 s   = 0.1;  // smale number
 s2  = s*2;  // smalle numer extra lenght
@@ -48,7 +48,7 @@ csd = 3;           // counder sink depth
 module ssdMount(n1,u2,nw,nmt){
     w = 69.9; // width
     d = 100; // depth
-    h = 7;  // height
+    h = 10+nmt;  // height
    
     hsp = 4+nw-w; // hole side position
     hbp = 14; // hole back position
@@ -62,23 +62,32 @@ module ssdMount(n1,u2,nw,nmt){
     e=1;
    
     sw = 20; // stableser width
-     
+
+    module ssdHole(x,y){
+        translate([x,y,-0.1])
+        cylinder(h=nmt+0.2,d2=hd,d1=hde);
+    }
+    module mountHole(x){
+        translate([x,-nmt/2-0.1,nmt*2+0.3])
+        rotate([90,0,0])
+        cylinder(h=nmt+0.3,d=hd,center=true);
+
+    } 
+
     difference(){
         union(){
-            cube([nw,d,nmt]);       
-            cube([nw,sw,n1]);
+            cube([nw,d,nmt]);
+            cube([nw,sw,h]);
             translate([(nw-u2)/2,-nmt,0])
-            cube([u2,nmt,n1]);
+            cube([u2,nmt,h]);
         }
-        union(){    
-            translate([hsp,hbp,-0.1])
-            cylinder(h=nmt+0.2,d2=hd,d1=hde);
-            translate([nw-hsp,hbp,-0.1])
-            cylinder(h=nmt+0.2,d2=hd,d1=hde);    
-            translate([hsp,hfp,-0.1])
-            cylinder(h=nmt+0.2,d2=hd,d1=hde);
-            translate([nw-hsp,hfp,-0.1])
-            cylinder(h=nmt+0.2,d2=hd,d1=hde);    
+        union(){
+            ssdHole(hsp,hbp);
+            ssdHole(nw-hsp,hbp);
+            ssdHole(hsp,hfp);
+            ssdHole(nw-hsp,hfp);
+            mountHole(u2-ct/4*3);
+            mountHole(-ct/4);
         }
         translate([(nw-w)/2,-(nmt+s),nmt])
         cube([w+e,d,nw]);
@@ -256,7 +265,7 @@ module caseMiddle(icw,cw,u2,nw,ct){
 
 translate([40,0,ct/2])
 rotate([0,-90,0])
-//ssdMount(n1,u2,nw,nmt);
+ssdMount(n1,u2,nw,nmt);
 //case(icw,cw,u2,nw,ct);
 
 

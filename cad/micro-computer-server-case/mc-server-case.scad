@@ -19,7 +19,7 @@ mw  = 12;   // mount width
 mhr = 6;    // mounting holes rack (d)
 mhc = 4;    // mounting holes case (d)
 mhn = 3;    // mounting holes node (d)
-npc = 8;   // nodes per case
+npc = 6;   // nodes per case
 fs  = 20;   // from side
 s   = 0.1;  // smale number
 s2  = s*2;  // smalle numer extra lenght
@@ -93,6 +93,113 @@ module ssdMount(n1,u2,nw,nmt){
         cube([w+e,d,nw]);
    }
 }
+
+
+
+/* piMount
+    Mount for rasbary pi to be installed on
+    micro-computer-server-case
+
+    n1:  node (ssd + extra) (~10)
+    u2:  two server unit
+    nw:  node width
+    nmt: node mouting thickness
+*/
+module piMount(n1,u2,nw,nmt){
+    w = 56;  // width of rassbary pi
+    d = 85;  // depth of rassbary pi
+    h = 20;  // height of rassbary pi
+
+    hd = 3.2;        // hole diameter
+    pm = -(u2-nw)/2;  // position mount
+
+    s=0.1;     // Small number
+    s2=s*2;   // Small number *2
+
+    sw = 18; // stableser width
+    m = 1; // margin
+
+    module piSpacers(w=56,d=85,h=20){
+        hlsp = 3.5; // hole left side position from pi
+        hrsp = hlsp+49; // hole right side position from pi
+        hbp  = d-3.5;     // hole back position from pi
+        hfp = hbp-58;   // hole front position from pi
+
+        spacerD = hd*2; // Spacer diameter
+
+        module spacer(x,y){
+            translate([x,y,0])
+            difference(){
+                cylinder(h=nmt+0.2,d=spacerD);
+                cylinder(h=nmt+0.2,d=hd);
+            }
+        }
+
+        //translate([0,0,nmt])
+        //cube(size = [w,d,nmt]);
+        spacer(hlsp,hbp);
+        spacer(hrsp,hbp);
+        spacer(hlsp,hfp);
+        spacer(hrsp,hfp);
+    }
+
+    module hole(x){
+        translate([x,s,(n1-m)/2])
+        rotate([90,0,0])
+        cylinder(h=nmt+s2,d=hd);
+    }
+
+    difference(){
+        union(){
+            // bottom plate
+            cube(size = [nw,d,nmt]);
+            // Spacers
+            translate([15,0,nmt])
+            piSpacers();
+            // Stabelisers
+            cube(size = [nw,sw,n1-m]);
+            // Mount
+            translate([pm,-nmt,0])
+            cube(size = [u2,nmt,n1-m]);
+        }
+        union(){
+            translate([nmt,-nmt-s,nmt])
+            cube(size = [nw-nmt*2,sw+nmt+s2,n1-nmt+s]);
+            hole(pm/2);
+            hole(u2+pm/2*3);
+        }
+    }
+}
+    
+/* jetMount
+    Mount for nvidia jetson for rasbary pi to be installed on
+    micro-computer-server-case
+
+    n1:  node (ssd + extra) (~10)
+    u2:  two server unit
+    nw:  node width
+    nmt: node mouting thickness
+*/
+module jetMount(n1,u2,nw,nmt){
+    w = 69.9; // width
+    d = 100; // depth
+    h = 10+nmt;  // height
+
+    hsp = 4+nw-w; // hole side position
+    hbp = 14; // hole back position
+    hfp = d-10; // hole front position
+
+    hd = 3; // hole diameter
+    hde = hd+3;// hole diameter extra
+
+    s=0.1;
+    s2=s*2;
+    e=1;
+
+    sw = 20; // stableser width
+
+}
+
 
 
 /* case
@@ -263,19 +370,45 @@ module caseMiddle(icw,cw,u2,nw,ct){
     }
 }
 
-translate([40,0,ct/2])
-rotate([0,-90,0])
-ssdMount(n1,u2,nw,nmt);
-//case(icw,cw,u2,nw,ct);
+module demo(){
+    startNodeSSD = 26;
+    startNodePI  = 75.94+n1;
 
+    translate([startNodePI+n1*2,0,ct/2])
+    rotate([0,-90,0])
+    piMount(n1,u2,nw,nmt);
 
-translate([0,0,u2])
-rotate([-90,0,0])
-union(){
-    caseSide(icw,cw,u2,nw,ct,mw,mt);
-    translate([cw,0,0])
-    caseMiddle(icw,cw,u2,nw,ct);
-    translate([cw*3,u2,0])
-    rotate([0,0,180])
-    caseSide(icw,cw,u2,nw,ct,mw,mt);
+    translate([startNodePI+n1,0,ct/2])
+    rotate([0,-90,0])
+    piMount(n1,u2,nw,nmt);
+
+    translate([startNodePI,0,ct/2])
+    rotate([0,-90,0])
+    piMount(n1,u2,nw,nmt);
+
+    translate([startNodeSSD+n1*2,0,ct/2])
+    rotate([0,-90,0])
+    ssdMount(n1,u2,nw,nmt);
+
+    translate([startNodeSSD+n1,0,ct/2])
+    rotate([0,-90,0])
+    ssdMount(n1,u2,nw,nmt);
+
+    translate([startNodeSSD,0,ct/2])
+    rotate([0,-90,0])
+    ssdMount(n1,u2,nw,nmt);
+
+    translate([0,0,u2])
+    rotate([-90,0,0])
+    union(){
+        caseSide(icw,cw,u2,nw,ct,mw,mt);
+        translate([cw,0,0])
+        caseMiddle(icw,cw,u2,nw,ct);
+        translate([cw*3,u2,0])
+        rotate([0,0,180])
+        caseSide(icw,cw,u2,nw,ct,mw,mt);
+    }
 }
+
+translate([0,20,0])
+demo();

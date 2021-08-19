@@ -35,7 +35,55 @@ nmt = 3;           // node mouting thickness
 cs  = m4+3;        // counter sink
 csd = 3;           // counder sink depth
     
-    
+
+/* generalMount
+    This is the general mount
+
+    height:     How tall mount is
+    thickness:  thickness of walls
+    totalWidth: width including node mount
+    width:      distance in x-axis
+    depth:      distance in y-axis
+*/
+module generalMount(height=n1,
+                    thickness=nmt,
+                    totalWidth=u2,
+                    width=nw, depth){
+    hd = 3.2;        // hole diameter
+    pm = -(u2-nw)/2;  // position mount
+
+    s=0.1;     // Small number
+    s2=s*2;   // Small number *2
+
+    sw = 18; // stableser width
+    m = 1; // margin
+
+    module hole(x){
+        translate([x,s,(height-m)/2])
+        rotate([90,0,0])
+        cylinder(h=thickness+s2,d=hd);
+    }
+
+    difference(){
+        union(){
+            // bottom plate
+            cube(size = [width,depth,thickness]);
+            // Stabelisers
+            cube(size = [width,sw,height-m]);
+            // Mount
+            translate([pm,-thickness,0])
+            cube(size = [totalWidth,thickness,height-m]);
+        }
+        union(){
+            translate([thickness,-thickness-s,thickness])
+            cube(size = [width-thickness*2,sw+thickness+s2,n1-thickness+s]);
+            hole(pm/2);
+            hole(totalWidth+pm/2*3);
+        }
+    }
+
+}
+
 /* ssdMount
     Mount for ssd to be installed on
     micro-computer-server-case
@@ -119,7 +167,7 @@ module piMount(n1,u2,nw,nmt){
     sw = 18; // stableser width
     m = 1; // margin
 
-    module piSpacers(w=56,d=85,h=20){
+    module spacers(w=56,d=85,h=20){
         hlsp = 3.5; // hole left side position from pi
         hrsp = hlsp+49; // hole right side position from pi
         hbp  = d-3.5;     // hole back position from pi
@@ -149,25 +197,10 @@ module piMount(n1,u2,nw,nmt){
         cylinder(h=nmt+s2,d=hd);
     }
 
-    difference(){
-        union(){
-            // bottom plate
-            cube(size = [nw,d,nmt]);
-            // Spacers
-            translate([15,0,nmt])
-            piSpacers();
-            // Stabelisers
-            cube(size = [nw,sw,n1-m]);
-            // Mount
-            translate([pm,-nmt,0])
-            cube(size = [u2,nmt,n1-m]);
-        }
-        union(){
-            translate([nmt,-nmt-s,nmt])
-            cube(size = [nw-nmt*2,sw+nmt+s2,n1-nmt+s]);
-            hole(pm/2);
-            hole(u2+pm/2*3);
-        }
+    union(){
+        generalMount(depth=d);
+        translate([15,0,nmt])
+        spacers();
     }
 }
     
@@ -181,13 +214,13 @@ module piMount(n1,u2,nw,nmt){
     nmt: node mouting thickness
 */
 module jetMount(n1,u2,nw,nmt){
-    w = 69.9; // width
-    d = 100; // depth
-    h = 10+nmt;  // height
+    w = 87.4;    // width of nvidiea jetson
+    d = 67.4;     // depth of nvidiea jetson
+    h = 30;  // height of nvidiea jetson
 
-    hsp = 4+nw-w; // hole side position
-    hbp = 14; // hole back position
-    hfp = d-10; // hole front position
+   // hsp = 4+nw-w; // hole side position
+   // hbp = 14; // hole back position
+   // hfp = d-10; // hole front position
 
     hd = 3; // hole diameter
     hde = hd+3;// hole diameter extra
@@ -198,6 +231,92 @@ module jetMount(n1,u2,nw,nmt){
 
     sw = 20; // stableser width
 
+    hlsp = 3; // hole left side position from pi
+    hrsp = w-3; // hole right side position from pi
+    hbp  = d-5;     // hole back position from pi
+    hfp = 3;   // hole front position from pi
+    spacerH = 12;
+    totalSpacerH = spacerH*2+nmt;
+
+    module holes(p=[hlsp, hrsp, hbp, hfp],h=12,d=3.2){
+        module hole(x,y){
+            translate([x,y,0])
+            cylinder(h=h,d=d);
+        }
+        hole(hlsp,hbp);
+        hole(hlsp,hfp);
+        hole(hrsp,hbp);
+        hole(hrsp,hfp);
+    }
+
+    module spacers(p=[hlsp, hrsp, hbp, hfp], h=12, d=3.2*2){
+        module spacer(x,y){
+            translate([x,y,0])
+            cylinder(h=h,d=d);
+        }
+        spacer(hlsp,hbp);
+        spacer(hrsp,hbp);
+        spacer(hlsp,hfp);
+        spacer(hrsp,hfp);
+    }
+
+    /*
+      height:     How tall mount is
+      thickness:  thickness of walls
+      totalWidth: width including node mount
+      width:      distance in x-axis
+      depth:      distance in y-axis
+    */
+    module horizontalMount(height=nw,totalHeight=u2,thickness=nmt,width=100,depth=70){
+        pm = -(totalHeight-height)/2; // position mount
+
+        rch = (height-thickness*3)/2; // removal cube hight
+        rcw = width-thickness*2; // removal cube width
+        rcd = depth+thickness+s2; // removal cube depth
+
+        module hole(z){
+            translate([width/2,s,z])
+            rotate([90,0,0])
+            cylinder(h=nmt+s2,d=hd);
+        }
+
+        difference(){
+            union(){
+                // cube
+                cube(size=[width,depth,height]);
+                // front mount
+                translate([0,-thickness,pm])
+                cube(size=[width,thickness,totalHeight]);
+            }
+            union(){
+                // remove bottom
+                translate([thickness,-thickness-s,thickness])
+                cube(size=[rcw,rcd,rch]);
+                // remove top
+                translate([thickness,-thickness-s,height-rch-thickness])
+                cube(size=[rcw,rcd,rch]);
+                // Holes for case mount top
+                hole(pm/2);
+                // Holes for case mount bottom
+                hole(height-pm/2);
+
+
+            }
+        }
+    }
+
+    difference(){
+        union(){
+            horizontalMount();
+            translate([nmt*2,0,(nw-totalSpacerH)/2])
+            spacers(p=[hlsp, hrsp, hbp, hfp], h=totalSpacerH);
+        }
+        union(){
+            translate([nmt*2,0,(nw-totalSpacerH-s2)/2])
+            holes(p=[hlsp, hrsp, hbp, hfp], h=totalSpacerH+s2);
+        }
+    }
+    
 }
 
 
@@ -374,6 +493,9 @@ module demo(){
     startNodeSSD = 26;
     startNodePI  = 75.94+n1;
 
+    translate([343.5,0,ct/2])
+    jetMount(n1,u2,nw,nmt);
+
     translate([startNodePI+n1*2,0,ct/2])
     rotate([0,-90,0])
     piMount(n1,u2,nw,nmt);
@@ -412,3 +534,4 @@ module demo(){
 
 translate([0,20,0])
 demo();
+

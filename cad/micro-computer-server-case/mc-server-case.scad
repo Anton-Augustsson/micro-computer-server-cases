@@ -1,11 +1,16 @@
 use <threadlib/threadlib.scad>
 
 $fn=90;  // accuracy
+m  =1;   // margin
+ms =0.2; // margin small
 
 // Fundemental
-tw = 482.6; // total width
+tw  = 482.6;// total width
+tiw = 450-m;  // Total iner width
+rhd = 465; // rack holde distance
 u1 = 44.45; // one server unit
-u2 = u1*2;  // two server unit
+u2 = u1*2-ms;  // two server unit
+u25 = u1*25; // 25 server units
 m4 = 4.2;   // screw
 wmm4 = 7;   // m4 mutter width
 hmm4 = 3.2; // height mutter m8
@@ -14,18 +19,20 @@ hmm4 = 3.2; // height mutter m8
 wt  = 7;    // wall thickness 
 wts = 8;    // wall thickness side
 ct  = 14;   // case thickenss
-mt  = 4;    // mount tikness
-mw  = 12;   // mount width
+mt  = 6;    // mount tikness
+mw  = (tw-tiw)/2;   // mount width
+mhp = (rhd-tiw)/2;// Mounting hole position
 mhr = 6;    // mounting holes rack (d)
 mhc = 4;    // mounting holes case (d)
 mhn = 3;    // mounting holes node (d)
-npc = 6;   // nodes per case
-fs  = 20;   // from side
+npc = 6;    // nodes per case
+fs  = 20.5;   // from side
 s   = 0.1;  // smale number
 s2  = s*2;  // smalle numer extra lenght
     
 // Spesific
 cw  = (tw-mw*2)/3; // case width
+//cw  = (tiw)/3; // case width
 icw = cw-wts*2;    // inner case width
 nt  = npc*3;       // nodes per case
 n1  = icw/npc;     // node (ssd + extra) (~10)
@@ -83,6 +90,29 @@ module generalMount(height=n1,
     }
 
 }
+
+module holes(p=[0,0,0,0],h=12,d=3.2){
+    module hole(x,y){
+        translate([x,y,0])
+        cylinder(h=h,d=d);
+    }
+    hole(p[0],p[2]);
+    hole(p[1],p[2]);
+    hole(p[0],p[3]);
+    hole(p[1],p[3]);
+}
+
+module spacers(p=[0,0,0,0], h=12, d=(3.2*2)){
+    module spacer(x,y){
+        translate([x,y,0])
+        cylinder(h=h,d=d);
+    }
+    spacer(p[0],p[2]);
+    spacer(p[1],p[2]);
+    spacer(p[0],p[3]);
+    spacer(p[1],p[3]);
+}
+
 
 /* ssdMount
     Mount for ssd to be installed on
@@ -154,56 +184,27 @@ module ssdMount(n1,u2,nw,nmt){
     nmt: node mouting thickness
 */
 module piMount(n1,u2,nw,nmt){
-    w = 56;  // width of rassbary pi
-    d = 85;  // depth of rassbary pi
-    h = 20;  // height of rassbary pi
+    w = 56;    // width of rassbary pi
+    d = 85;    // depth of rassbary pi
+    h = 20;    // height of rassbary pi
+    hlsp = 3.5;     // hole left side position from pi
+    hrsp = hlsp+49; // hole right side position from pi
+    hbp  = d-3.5;   // hole back position from pi
+    hfp  = hbp-58;  // hole front position from pi
 
-    hd = 3.2;        // hole diameter
-    pm = -(u2-nw)/2;  // position mount
-
-    s=0.1;     // Small number
-    s2=s*2;   // Small number *2
-
-    sw = 18; // stableser width
-    m = 1; // margin
-
-    module spacers(w=56,d=85,h=20){
-        hlsp = 3.5; // hole left side position from pi
-        hrsp = hlsp+49; // hole right side position from pi
-        hbp  = d-3.5;     // hole back position from pi
-        hfp = hbp-58;   // hole front position from pi
-
-        spacerD = hd*2; // Spacer diameter
-
-        module spacer(x,y){
-            translate([x,y,0])
-            difference(){
-                cylinder(h=nmt+0.2,d=spacerD);
-                cylinder(h=nmt+0.2,d=hd);
-            }
+    difference(){
+        union(){
+            generalMount(depth=d);
+            translate([15,0,nmt])
+            spacers(p=[hlsp,hrsp,hbp,hfp], h=nmt);
         }
-
-        //translate([0,0,nmt])
-        //cube(size = [w,d,nmt]);
-        spacer(hlsp,hbp);
-        spacer(hrsp,hbp);
-        spacer(hlsp,hfp);
-        spacer(hrsp,hfp);
-    }
-
-    module hole(x){
-        translate([x,s,(n1-m)/2])
-        rotate([90,0,0])
-        cylinder(h=nmt+s2,d=hd);
-    }
-
-    union(){
-        generalMount(depth=d);
-        translate([15,0,nmt])
-        spacers();
+        union(){
+            translate([15,0,0])
+            holes(p=[hlsp,hrsp,hbp,hfp], h=nmt*2);
+        }
     }
 }
-    
+
 /* jetMount
     Mount for nvidia jetson for rasbary pi to be installed on
     micro-computer-server-case
@@ -217,11 +218,6 @@ module jetMount(n1,u2,nw,nmt){
     w = 87.4;    // width of nvidiea jetson
     d = 67.4;     // depth of nvidiea jetson
     h = 30;  // height of nvidiea jetson
-
-   // hsp = 4+nw-w; // hole side position
-   // hbp = 14; // hole back position
-   // hfp = d-10; // hole front position
-
     hd = 3; // hole diameter
     hde = hd+3;// hole diameter extra
 
@@ -237,28 +233,6 @@ module jetMount(n1,u2,nw,nmt){
     hfp = 3;   // hole front position from pi
     spacerH = 12;
     totalSpacerH = spacerH*2+nmt;
-
-    module holes(p=[hlsp, hrsp, hbp, hfp],h=12,d=3.2){
-        module hole(x,y){
-            translate([x,y,0])
-            cylinder(h=h,d=d);
-        }
-        hole(hlsp,hbp);
-        hole(hlsp,hfp);
-        hole(hrsp,hbp);
-        hole(hrsp,hfp);
-    }
-
-    module spacers(p=[hlsp, hrsp, hbp, hfp], h=12, d=3.2*2){
-        module spacer(x,y){
-            translate([x,y,0])
-            cylinder(h=h,d=d);
-        }
-        spacer(hlsp,hbp);
-        spacer(hrsp,hbp);
-        spacer(hlsp,hfp);
-        spacer(hrsp,hfp);
-    }
 
     /*
       height:     How tall mount is
@@ -304,6 +278,7 @@ module jetMount(n1,u2,nw,nmt){
             }
         }
     }
+
 
     difference(){
         union(){
@@ -354,20 +329,20 @@ module case(icw,cw,u2,nw,ct){
             translate([(w-iw)/2,(d-id)/2,-s])
             cube([iw,id,h+s2]);
     
-            translate([wts/2,u2/2,ph])
-            cylinder(h=20,d=3.2);
+            translate([wts/2,u2/2,0])
+            bolt("M3", turns=16, higbee_arc=30);
+
+            translate([cw-wts/2,u2/2,0])
+            bolt("M3", turns=16, higbee_arc=30);
+
+            for(i=[1:2:npc*2]){ // npc*2
+                translate([wts+(n1/2)*i,wt/2,0])
+                //cylinder(h=20,d=3.2);
+                bolt("M3", turns=16, higbee_arc=30);
     
-            translate([cw-wts/2,u2/2,ph])
-            cylinder(h=20,d=3.2);
-        
-            for(i=[1:2:npc*2]){
-                translate([wts+(n1/2)*i,wt/2,ph])
-                cylinder(h=20,d=3.2);
-                //bolt("M3", turns=16, higbee_arc=30);
-    
-                translate([wts+(n1/2)*i,u2-wt/2,ph])
-                cylinder(h=20,d=3.2);
-                //bolt("M3", turns=16, higbee_arc=30);    
+                translate([wts+(n1/2)*i,u2-wt/2,0])
+                //cylinder(h=20,d=3.2); // ph
+                bolt("M3", turns=16, higbee_arc=30);
             }
         }
     }
@@ -415,7 +390,7 @@ module fhex(wid,height){
     mw:  mount width
     mt:  mount tikness
 */
-module caseSide(icw,cw,u2,nw,ct,mw,mt){
+module caseSide(icw,cw,u2,nw,ct,mw,mt,mhp){
     
     module m(y){
         space = cw-(cw-icw)/2+hmm4/2-0.1;
@@ -425,24 +400,27 @@ module caseSide(icw,cw,u2,nw,ct,mw,mt){
     }
     
     module mh(y){
-        translate([-mw/2,y,-1.0])
-        cylinder(h=mt+0.2,d=6.2);
+        translate([-mhp,y,-0.1])
+        cylinder(h=mt+0.2,d=7);
     }
     
     difference(){
         union(){
+            // the case itself
             case(icw,cw,u2,nw,ct);
-        
+            // For the mounting
             translate([-mw,0,0])
             cube([mw,u2,mt]);
         }
     
         union(){
+            // Screwhole for connecting with middle case
             m(fs);
             m(u2-fs);
             caseHole(fs,icw);
-            caseHole(u2-fs,icw);    
-            mh(fs); //change
+            caseHole(u2-fs,icw);
+            // Holes for mounting to server rack
+            mh(fs);
             mh(u2-fs);    
         }   
     }
@@ -490,17 +468,58 @@ module caseMiddle(icw,cw,u2,nw,ct){
 }
 
 module demo(){
-    startNodeSSD = 26;
-    startNodePI  = 75.94+n1;
+    module serverRack(){
+        holeDistW = 465;  // distance width
+        holeDistH = 15.9022*3; // Distance height
+
+        totalDist = 483;
+        innerDist = 450;
+
+        width     = (totalDist-innerDist)/2;
+        thickness = 3;
+        height    = u25;
+
+        holeDia   = 6;
+        holeStart = holeDia*3+2.5;
+        holePW = (holeDistW-innerDist)/2;
+
+        difference(){
+            union(){
+                translate([-width,0,0])
+                    cube(size=[width,thickness,height]);
+
+                translate([innerDist,0,0])
+                    cube(size=[width,thickness,height]);
+            }
+            union(){
+                    translate([-holePW,+thickness+s,holeStart])
+                        rotate([90,0,0])
+                        cylinder(h=thickness+s2,d=holeDia);
+                     translate([-holePW,+thickness+s,holeStart+holeDistH])
+                        rotate([90,0,0])
+                         cylinder(h=thickness+s2,d=holeDia);
+                /*
+                for(i=[holeStart:holeDistH:holeDistH*25]){
+                    translate([-holePW,+thickness+s,i])
+                        rotate([90,0,0])
+                        cylinder(h=thickness+s2,d=holeDia);
+                }
+                */
+            }
+        }
+    }
+
+    startNodeSSD = 25.5+n1;
+    startNodePI  = 52.17-n1;
 
     translate([343.5,0,ct/2])
     jetMount(n1,u2,nw,nmt);
 
-    translate([startNodePI+n1*2,0,ct/2])
+    translate([startNodePI+n1*4,0,ct/2])
     rotate([0,-90,0])
     piMount(n1,u2,nw,nmt);
 
-    translate([startNodePI+n1,0,ct/2])
+    translate([startNodePI+n1*2,0,ct/2])
     rotate([0,-90,0])
     piMount(n1,u2,nw,nmt);
 
@@ -508,11 +527,11 @@ module demo(){
     rotate([0,-90,0])
     piMount(n1,u2,nw,nmt);
 
-    translate([startNodeSSD+n1*2,0,ct/2])
+    translate([startNodeSSD+n1*4,0,ct/2])
     rotate([0,-90,0])
     ssdMount(n1,u2,nw,nmt);
 
-    translate([startNodeSSD+n1,0,ct/2])
+    translate([startNodeSSD+n1*2,0,ct/2])
     rotate([0,-90,0])
     ssdMount(n1,u2,nw,nmt);
 
@@ -523,15 +542,20 @@ module demo(){
     translate([0,0,u2])
     rotate([-90,0,0])
     union(){
-        caseSide(icw,cw,u2,nw,ct,mw,mt);
+        caseSide(icw,cw,u2,nw,ct,mw,mt,mhp);
         translate([cw,0,0])
         caseMiddle(icw,cw,u2,nw,ct);
         translate([cw*3,u2,0])
         rotate([0,0,180])
-        caseSide(icw,cw,u2,nw,ct,mw,mt);
+        caseSide(icw,cw,u2,nw,ct,mw,mt,mhp);
     }
+
+    color("Snow")
+    translate([-m/2,6,0])
+    serverRack();
 }
 
-translate([0,20,0])
-demo();
+//translate([0,20,0])
+//demo();
 
+caseSide(icw,cw,u2,nw,ct,mw,mt,mhp);

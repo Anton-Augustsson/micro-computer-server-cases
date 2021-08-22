@@ -26,10 +26,14 @@ mhr = 6;    // mounting holes rack (d)
 mhc = 4;    // mounting holes case (d)
 mhn = 3;    // mounting holes node (d)
 npc = 6;    // nodes per case
-fs  = 20.5;   // from side
 s   = 0.1;  // smale number
 s2  = s*2;  // smalle numer extra lenght
-    
+
+hdr = 15.875; // holde distance rack
+hdrbu = 12.70; // holde distance rack between union
+fs  = u2-hdr-hdrbu/2;   // from side (old 20.5)
+// u2 90 -hdrbu-2*hdr
+
 // Spesific
 cw  = (tw-mw*2)/3; // case width
 //cw  = (tiw)/3; // case width
@@ -555,7 +559,5 @@ module demo(){
     serverRack();
 }
 
-//translate([0,20,0])
-//demo();
-
-caseSide(icw,cw,u2,nw,ct,mw,mt,mhp);
+translate([0,20,0])
+demo();

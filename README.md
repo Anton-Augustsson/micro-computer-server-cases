@@ -16,5 +16,6 @@ Server rack cases for micro computers like raspberry pi, nvidia jetson aswell as
 - [SSD](https://www.intel.com/content/www/us/en/support/articles/000006346/memory-and-storage.html)
 
 ### Server case
+- [Rack dimensions](https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/19_inch_rack_dimensions.svg/767px-19_inch_rack_dimensions.svg.png)
 19" 482.6mm
 1.75" 44.45mm

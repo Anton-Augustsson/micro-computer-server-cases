@@ -9,8 +9,9 @@ use <case-generic.scad>
     cho: case height outer
     cdt: case depth thickenss
     cist: case innner side thickness 
+    npc: node per case
 */
-module caseSide(cwi,cwo,chi,cho,cdt,cist){
+module caseSide(cwi,cwo,chi,cho,cdt,cist,npc){
     // TODO: change all values
 
     cst = (cwo-cwi)/2; // case side thickness
@@ -26,7 +27,7 @@ module caseSide(cwi,cwo,chi,cho,cdt,cist){
 
     difference(){
         union(){
-            caseGeneric(cwi,cwo,chi,cho,cdt);
+            caseGeneric(cwi,cwo,chi,cho,cdt,npc);
 
             translate([-csw,0,0])
             cube([csw,cho,csmt]);
@@ -65,5 +66,6 @@ cwi = cwo-8*2; // Side thinckness is 8
 cdt = 14;
 emc = (((cwo-cwi)/2)/3)*2; // 2/3 extra
 cist = 3;
+npc = 6;
 
-caseSide(cwi,cwo,chi,cho,cdt,cist);
+caseSide(cwi,cwo,chi,cho,cdt,cist,npc);

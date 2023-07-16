@@ -9,9 +9,9 @@ use <threadlib/threadlib.scad>
     chi: case height inner
     cho: case height outer
     cdt: case depth thickenss
+    npc: node per case
 */
-module caseGeneric(cwi,cwo,chi,cho,cdt){
-    npc = 6; // Node per case
+module caseGeneric(cwi,cwo,chi,cho,cdt,npc){
     nt = cwi/npc;  // Node thicknes
 
     wt = (cho-chi)/2; // wall thickness top and bottom

@@ -1,3 +1,5 @@
+$fn=90;  // accuracy
+
 /* ssdMount
     Mount for ssd to be installed on
     micro-computer-server-case
@@ -45,8 +47,8 @@ module ssdMount(chi,cho,nw){
             cube([ct,nmt,nw]); // For mount to case
 
             // TODO: remove, just for development
-            translate([(chim-w)/2,0,0])
-            #cube([w,d,10]); // For mount to case
+            //translate([(chim-w)/2,0,nmt])
+            //#cube([w,d,10]); // For mount to case
 
             cube([(chim-w)/2-0.4,d/4,nw]); // For mount to case
             translate([chim-((chim-w)/2-0.4),0,0])
@@ -60,7 +62,7 @@ module ssdMount(chi,cho,nw){
                 ssdHole(dbhw,dbhd); // top right
             }
             mountHole(-ct/2);
-            mountHole(chim+ct/2);
+            mountHole(cho-ct/2-ct);
         }
    }
 }
@@ -73,6 +75,11 @@ cwi = cwo-8*2; // Side thinckness is 8
 
 cho = u1*2-0.2; // two server unit - small margin
 chi = cho-7*2; // Side thinckness is 7
-nw = cwi/npc-2; // -2 for margin
+nw = 14; // cwi/npc-2; // -2 for margin
 
 ssdMount(chi,cho,nw);
+
+//translate([-0.2,0,0])
+//#cube([74.8,7,15]);
+//translate([-7/2,0,10])
+//#cube([81.9,7,5]);

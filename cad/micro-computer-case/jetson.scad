@@ -4,11 +4,6 @@ $fn=90;  // accuracy
     Mount for nvidia jetson for rasbary pi to be installed on
     micro-computer-server-case
 
-    n1:  node (ssd + extra) (~10)
-    u2:  two server unit
-    nw:  node width
-    nmt: node mouting thickness
-
     chi: case height inner
     cho: case height outer
     nw:  node width

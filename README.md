@@ -1,6 +1,13 @@
 # micro-computer-server-cases
-Server rack cases for micro computers like raspberry pi, nvidia jetson aswell as storage cases.
+Server rack cases for micro computers like raspberry pi, nvidia jetson as well as storage cases.
 
+The server rack case is divided into three equal parts. If the device you want to mount in the server rack 
+case does not fit vertically you can mount it horizontally. See the diagrams for measurements when making your
+own node cases.
+
+![2U server rack case](doc/images/2U_server_rack_case.png)
+
+![Horizontal node case side profile](doc/images/Horizontal_node_case_side_profile.png)
 
 ## Standard size
 ### Raspberry pi

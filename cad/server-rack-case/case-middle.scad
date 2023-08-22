@@ -1,4 +1,5 @@
-use <case-generic.scad>
+use <case-generic.scad>;
+include <../utils/constants.scad>;
 
 /* caseMiddle
     The rack case is in three parts left side case,
@@ -51,20 +52,4 @@ module caseMiddle(cwi,cwo,chi,cho,cdt,cist,npc){
     }
 }
  
-
-// Server dimentions
-u1 = 44.45; // one server unit
-tw  = 482.6;// total width
-tiw = 450-1;  // Total iner width - margin 1
-
-// Case dimentions
-cho = u1*2-0.2; // two server unit - small margin
-chi = cho-7*2; // Side thinckness is 7
-cwo = tiw/3;
-cwi = cwo-8*2; // Side thinckness is 8
-cdt = 14;
-emc = (((cwo-cwi)/2)/3)*2; // 2/3 extra
-cist = 3;
-npc = 6;
-
 caseMiddle(cwi,cwo,chi,cho,cdt,cist,npc);

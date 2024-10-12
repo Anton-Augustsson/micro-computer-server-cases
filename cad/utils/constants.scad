@@ -1,3 +1,5 @@
+$fn=90;  // accuracy
+
 /* Server dimentions */
 
 // one server unit
@@ -13,7 +15,34 @@ tw  = 482.6;
 
 // Total inner width
 // The distance between the mounting holes in the server rack
-tiw = 450;   
+tiw = 450; // TODO: 432?  
+
+
+/* Rack hole dimentions */
+
+// width distance rack holes
+wdrh = 465;
+
+// height distance rack holes
+hdrh = 33;
+
+
+/* dell optiplex 7040 micro usff dimentions */
+
+// dell optiplex 7040 height
+do7040h = 36;
+
+// dell optiplex 7040 width
+do7040w = 182;
+
+// dell optiplex 7040 depth
+do7040d = 179;
+
+// dell optiplex 7040 rubber feet width distance
+do7040rfwd = 14.9;
+
+// dell optiplex 7040 rubber feet back depth distance
+do7040rfbdd = 9.9;
 
 
 /* Case dimentions */

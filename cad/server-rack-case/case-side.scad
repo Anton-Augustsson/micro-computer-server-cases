@@ -52,4 +52,4 @@ module caseSide(cwi,cwo,chi,cho,cdt,cist,npc){
     }
 }
 
-caseSide(cwi,cwo,chi,cho,cdt,cist,npc);
+caseSide(c_cwi,c_cwo,c_chi,c_cho,c_cdt,c_cist,c_npc);

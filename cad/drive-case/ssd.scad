@@ -1,4 +1,4 @@
-$fn=90;  // accuracy
+include <../utils/constants.scad>;
 
 /* ssdMount
     Mount for ssd to be installed on
@@ -67,17 +67,17 @@ module ssdMount(chi,cho,nw){
    }
 }
 
-u1 = 44.45; // one server unit
-npc = 6;
-tiw = 450-1;  // Total iner width - margin 1
-cwo = tiw/3;
-cwi = cwo-8*2; // Side thinckness is 8
+//u1 = 44.45; // one server unit
+//npc = 6;
+//tiw = 450-1;  // Total iner width - margin 1
+//cwo = tiw/3;
+//cwi = cwo-8*2; // Side thinckness is 8
 
-cho = u1*2-0.2; // two server unit - small margin
-chi = cho-7*2; // Side thinckness is 7
+//cho = u1*2-0.2; // two server unit - small margin
+//chi = cho-7*2; // Side thinckness is 7
 nw = 14; // cwi/npc-2; // -2 for margin
 
-ssdMount(chi,cho,nw);
+ssdMount(c_chi,c_cho,nw);
 
 //translate([-0.2,0,0])
 //#cube([74.8,7,15]);

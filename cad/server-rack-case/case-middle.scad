@@ -15,7 +15,10 @@ include <../utils/constants.scad>;
     npc: node per case
 */
 module caseMiddle(cwi,cwo,chi,cho,cdt,cist,npc){
-    cst = (cwo-cwi)/2; // case side thickness
+    // -2 since it wont fit otherwise
+    cwoa = cwo-2; // case width outer actual
+    cwia = cwi-2;
+    cst = (cwoa-cwia)/2; // case side thickness
     emc = cst-cist; // extra for mounting cases 
 
     s = 1;
@@ -25,18 +28,18 @@ module caseMiddle(cwi,cwo,chi,cho,cdt,cist,npc){
 
     difference(){
         union(){
-            caseGeneric(cwi,cwo,chi,cho,cdt,npc);
+            caseGeneric(cwia,cwoa,chi,cho,cdt,npc,false);
 
             translate([-emc,0,0])
             cube([emc,cho,cdt/2]);
 
-            translate([cwo,0,0])
+            translate([cwoa,0,0])
             cube([emc,cho,cdt/2]);
         }
         union(){
-            translate([cwo,cho/5*1,-s])
+            translate([cwoa,cho/5*1,-s])
             cylinder(h=cdt+s2,d=hdc);
-            translate([cwo,cho/5*4,-s])
+            translate([cwoa,cho/5*4,-s])
             cylinder(h=cdt+s2,d=hdc);
 
             translate([0,cho/5*1,-s])
@@ -44,12 +47,12 @@ module caseMiddle(cwi,cwo,chi,cho,cdt,cist,npc){
             translate([0,cho/5*4,-s])
             cylinder(h=cdt+s2,d=hdc);
 
-            translate([cwo-cst+cist,-s,cdt/2]) // TODO: change to correct possition
+            translate([cwoa-cst+cist,-s,cdt/2])
             cube([cst-cist+s,cho+s2,cdt/2+s]);
-            translate([-s,-s,cdt/2]) // TODO: change to correct possition
+            translate([-s,-s,cdt/2])
             cube([cst-cist+s,cho+s2,cdt/2+s]);
         }
     }
 }
  
-caseMiddle(cwi,cwo,chi,cho,cdt,cist,npc);
+caseMiddle(c_cwi,c_cwo,c_chi,c_cho,c_cdt,c_cist,c_npc);

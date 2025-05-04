@@ -10,8 +10,9 @@ use <threadlib/threadlib.scad>
     cho: case height outer
     cdt: case depth thickenss
     npc: node per case
+    isDown: is 3m down
 */
-module caseGeneric(cwi,cwo,chi,cho,cdt,npc){
+module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isDown=true){
     nt = cwi/npc;  // Node thicknes
 
     wt = (cho-chi)/2; // wall thickness top and bottom
@@ -39,8 +40,19 @@ module caseGeneric(cwi,cwo,chi,cho,cdt,npc){
         union(){
             translate([wts,wt,-s])
             cube([cwi,chi,cdt+s2]);
-
-            //nodeMountingHoles(); // Comment out to render faster
+            
+            if (isDown)
+            {
+                nodeMountingHoles(); // Comment out to render faster
+            }
+            else
+            {
+                translate([0,0,cdt/2-1])
+                nodeMountingHoles(); // Comment out to render faster
+            }
+            
+            
+            
         }
     }
 }

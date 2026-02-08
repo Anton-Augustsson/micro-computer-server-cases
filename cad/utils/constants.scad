@@ -50,7 +50,7 @@ c_do7040rfbdd = 9.9;
 // case height outer 
 // A small margin is included to so that the case does not 
 // exide two server units
-c_2ucho = c_2u-0.2; 
+c_2ucho = 88.6; 
 
 // case height inner
 // The thickness of the walls can then be calculated as (cho-chi)/2

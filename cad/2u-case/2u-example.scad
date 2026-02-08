@@ -18,10 +18,10 @@ rotate([-90,0,0]){
     caseSide(c_cwi,c_cwo,c_2uchi,c_2ucho,c_cdt,c_npc);
     
     // Node holders
-    translate([3,6,-4])
+    translate([3,5.5,-4])
     rotate([90,0,90])
     ssdHolder(c_2uchi,c_2ucho);
-    translate([23,6,-4])
+    translate([23,5.5,-4])
     rotate([90,0,90])
     ssdHolder(c_2uchi,c_2ucho);
 }

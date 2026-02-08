@@ -15,6 +15,8 @@
 - Case outer width: is not the total width of a case instead it's using a standardized side thickness.
 - Node hole vertical distance: is the distance between the bottom node mounting hole to the top mounting hole.
 - Node hole horizontal distance: is the distance between the one node mounting hole to the next.
+- Horizontal wall thickness: the thickness of the case bottom and top walls.
+- Vertical wall thickness: the thickness of the left and right side walls.
 
 
 ## Standard size

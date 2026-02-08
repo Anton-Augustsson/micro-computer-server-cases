@@ -13,10 +13,10 @@
 module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
     nt = cwi/npc;  // Node thicknes
 
-    wtt = (cho-chi)/2; // wall thickness top and bottom
-    wts = (cwo-cwi)/2; // wall thickness sides
-    wtst = wts*2; // wall thickness sides total
-    cwt = cwo+wts*2; // case width total
+    hwt = (cho-chi)/2; // horizontal wall thickness
+    vwt = (cwo-cwi)/2; // vertical wall thickness
+    vwtt = vwt*2; // vertical wall thickness total
+    cwt = cwo+vwt*2; // case width total
     dnmh = 4; // diameter node mounting hole
     hnmh = 12; // height node mounting hole
     dcmh = 4; // diameter case mounting hole
@@ -24,11 +24,11 @@ module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
     module nodeMountingHoles(){
         for(i=[1:2:npc*2]){
             // Buttom holes
-            translate([wtst+(nt/2)*i,wtt/2,0])
+            translate([vwtt+(nt/2)*i,hwt/2,0])
             cylinder(d=dnmh, h=hnmh);
 
             // Top holes 
-            translate([wtst+(nt/2)*i,cho-wtt/2,0])
+            translate([vwtt+(nt/2)*i,cho-hwt/2,0])
             cylinder(d=dnmh, h=hnmh);
         }
     }
@@ -37,7 +37,7 @@ module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
         union(){
             if (isSide)
             {
-              cube([cwt-wts,cho,cdt]);
+              cube([cwt-vwt,cho,cdt]);
             }
             else
             {
@@ -45,15 +45,15 @@ module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
             }
         }
         union(){
-            translate([wtst,wtt,0])
+            translate([vwtt,hwt,0])
             cube([cwi,chi,cdt]);
             
             translate([0,0,cdt/2])
-            cube([wtst,cho,cdt/2]);
+            cube([vwtt,cho,cdt/2]);
 
-            translate([wts,cho/5,0])
+            translate([vwt,cho/5,0])
             cylinder(d=dcmh, h=cdt);
-            translate([wts,cho/5*4,0])
+            translate([vwt,cho/5*4,0])
             cylinder(d=dcmh, h=cdt);
 
             if (isSide)
@@ -66,11 +66,11 @@ module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
                 nodeMountingHoles();
 
                 translate([cwo,0,cdt/2])
-                cube([wtst,cho,cdt/2]);
+                cube([vwtt,cho,cdt/2]);
 
-                translate([cwt-wts,cho/5,0])
+                translate([cwt-vwt,cho/5,0])
                 cylinder(d=dcmh, h=cdt);
-                translate([cwt-wts,cho/5*4,0])
+                translate([cwt-vwt,cho/5*4,0])
                 cylinder(d=dcmh, h=cdt);
             }
         }

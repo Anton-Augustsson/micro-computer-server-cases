@@ -3,10 +3,10 @@ $fn=90;  // accuracy
 /* Server dimentions */
 
 // one server unit
-c_u1 = 44.45;  
+c_1u = 44.45;  
 
 // two server unit
-c_u2 = c_u1*2; // 88.9
+c_2u = c_1u*2; // 88.9
 
 // total width
 // The total with of the a server rack (19")
@@ -50,11 +50,11 @@ c_do7040rfbdd = 9.9;
 // case height outer 
 // A small margin is included to so that the case does not 
 // exide two server units
-c_cho = c_u2-0.2; 
+c_2ucho = c_2u-0.2; 
 
 // case height inner
 // The thickness of the walls can then be calculated as (cho-chi)/2
-c_chi = 78;
+c_2uchi = 78;
 
 // case width outer
 // as there are three parts of the rack server case we just devide

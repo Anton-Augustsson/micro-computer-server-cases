@@ -1,5 +1,4 @@
 use <case-generic.scad>;
-include <../../utils/constants.scad>;
 
 /* caseSide
     case with have rack mounts. One on eatch side
@@ -48,4 +47,3 @@ module caseSide(cwi,cwo,chi,cho,cdt,npc){
     }
 }
 
-caseSide(c_cwi,c_cwo,c_chi,c_cho,c_cdt,c_cist,c_npc);

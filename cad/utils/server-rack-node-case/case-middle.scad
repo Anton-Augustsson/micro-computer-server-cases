@@ -1,5 +1,4 @@
 use <case-generic.scad>;
-include <../../utils/constants.scad>;
 
 /* caseMiddle
     The rack case is in three parts left side case,
@@ -24,4 +23,3 @@ module caseMiddle(cwi,cwo,chi,cho,cdt,npc){
     caseGeneric(cwi,cwo,chi,cho,cdt,npc,false);
 }
  
-//caseMiddle(c_cwi,c_cwo,c_chi,c_cho,c_cdt,c_cist,c_npc);

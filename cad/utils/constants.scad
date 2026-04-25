@@ -54,7 +54,10 @@ c_2ucho = 88.6;
 
 // case height inner
 // The thickness of the walls can then be calculated as (cho-chi)/2
-c_2uchi = 78;
+c_2uchi = 76;
+
+// distance between node holes
+c_2udbnh = 82.3;
 
 // case width outer
 // as there are three parts of the rack server case we just devide
@@ -68,7 +71,7 @@ c_cwi = 140;
 // case depth thickness
 // How thick the case should be. It needs to be thicker than the hight
 // of the threaded insert.
-c_cdt = 40;
+c_cdt = 30;
 
 // case inner side thickness
 // The middle and the side case over lap so that a screw can be entered

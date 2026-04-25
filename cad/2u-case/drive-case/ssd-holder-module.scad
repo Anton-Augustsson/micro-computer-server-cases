@@ -4,13 +4,15 @@
     
     chi: case height inner
     cho: case height outer
+    dbnh: distance between node holes
+    cdt: case depth thickness
 */
-module ssdHolder(chi,cho){
+module ssdHolder(chi,cho,dbnh,cdt){
     hwt = (cho-chi)/2; // horizontal wall thickness
     nhbpt = 3; // node holder base plate thickness
     chim = chi-0.4; // case height inner - margin
     nhw = 14; // node holder width
-    nhd = 30; // node holder depth
+    nhd = cdt; // node holder depth
 
     ssdw = 69.9; // sdd width
     ssdd = 100; // ssd depth
@@ -54,8 +56,10 @@ module ssdHolder(chi,cho){
             }
 
             // Mount holes to case
-            mountHole(-hwt/2);
-            mountHole(cho-hwt/2-hwt);
+            translate([-hwt/2,0,0]){
+              mountHole(0);
+              mountHole(dbnh);
+            }
         }
    }
 }

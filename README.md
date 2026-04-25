@@ -17,6 +17,7 @@
 - Node hole horizontal distance: is the distance between the one node mounting hole to the next.
 - Horizontal wall thickness: the thickness of the case bottom and top walls.
 - Vertical wall thickness: the thickness of the left and right side walls.
+- Case depth thickness: how deep the case is. This must be more than the threaded inserts.
 
 
 ## Standard size

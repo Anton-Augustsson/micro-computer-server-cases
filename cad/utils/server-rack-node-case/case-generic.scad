@@ -8,9 +8,10 @@
     cho: case height outer
     cdt: case depth thickenss
     npc: node per case
+    dbnh: distance between node holes
     isSide: 
 */
-module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
+module caseGeneric(cwi,cwo,chi,cho,cdt,npc,dbnh, isSide=true){
     nt = cwi/npc;  // Node thicknes
 
     hwt = (cho-chi)/2; // horizontal wall thickness
@@ -18,17 +19,18 @@ module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
     vwtt = vwt*2; // vertical wall thickness total
     cwt = cwo+vwt*2; // case width total
     dnmh = 4; // diameter node mounting hole
-    hnmh = 12; // height node mounting hole
-    dcmh = 4; // diameter case mounting hole
+    hnmh = 9; // height node mounting hole
+    dcmh = 4.3; // diameter case mounting hole
+    mcc = 0.5; // margin for connecting cases
 
     module nodeMountingHoles(){
         for(i=[1:2:npc*2]){
             // Buttom holes
-            translate([vwtt+(nt/2)*i,hwt/2,0])
+            translate([vwtt+(nt/2)*i,(cho-dbnh)/2,0])
             cylinder(d=dnmh, h=hnmh);
 
             // Top holes 
-            translate([vwtt+(nt/2)*i,cho-hwt/2,0])
+            translate([vwtt+(nt/2)*i,(cho+dbnh)/2,0])
             cylinder(d=dnmh, h=hnmh);
         }
     }
@@ -45,11 +47,13 @@ module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
             }
         }
         union(){
+            // Inner cutout
             translate([vwtt,hwt,0])
             cube([cwi,chi,cdt]);
             
+            // Cutout for connecting cases
             translate([0,0,cdt/2])
-            cube([vwtt,cho,cdt/2]);
+            cube([vwtt+mcc,cho,cdt/2]);
 
             translate([vwt,cho/5,0])
             cylinder(d=dcmh, h=cdt);
@@ -65,8 +69,8 @@ module caseGeneric(cwi,cwo,chi,cho,cdt,npc, isSide=true){
                 translate([0,0,cdt-hnmh])
                 nodeMountingHoles();
 
-                translate([cwo,0,cdt/2])
-                cube([vwtt,cho,cdt/2]);
+                translate([cwo-mcc,0,cdt/2])
+                cube([vwtt+mcc,cho,cdt/2]);
 
                 translate([cwt-vwt,cho/5,0])
                 cylinder(d=dcmh, h=cdt);

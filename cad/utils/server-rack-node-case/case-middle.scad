@@ -11,8 +11,9 @@ use <case-generic.scad>;
     cho: case height outer
     cdt: case depth thickenss
     npc: node per case
+    dbnh: distance between node holes
 */
-module caseMiddle(cwi,cwo,chi,cho,cdt,npc){
-    caseGeneric(cwi,cwo,chi,cho,cdt,npc,false);
+module caseMiddle(cwi,cwo,chi,cho,cdt,npc,dbnh){
+    caseGeneric(cwi,cwo,chi,cho,cdt,npc,dbnh,false);
 }
  
